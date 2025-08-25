@@ -20,7 +20,8 @@
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Стефан Најдовски, Христијан Горков"},"dateModified":"2025-06-06T09:32:32+02:00","datePublished":"2025-06-06T09:32:32+02:00","description":"Блогов што го читате е резултат на работните групи по вештачка интелигенција, каде што ние студентите Стефан Најдовски и Христијан Горков, запишани на прв циклус студии на Факултетот за Информатички и Комункациски Технологии - Битола под менторство на Проф д-р Костандина Вељановска. и асистентот М-р Дарко Пајковски.","headline":"Имплементациjа На Трансформер Архитектурата За Македонско-Англиски Превод На Реченици","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/basics/2025/06/06/transformer-mk-en.html"},"url":"http://localhost:4000/basics/2025/06/06/transformer-mk-en.html"}</script>
 <!-- End Jekyll SEO tag -->
-<link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="Денес Нешто Научив" /><!-- MathJax for LaTeX rendering -->
+<link rel="stylesheet" href="/assets/main.css">
+  <link rel="stylesheet" href="/assets/css/custom.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="Денес Нешто Научив" /><!-- MathJax for LaTeX rendering -->
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script id="MathJax-script" async
     src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
@@ -93,7 +94,10 @@
   <li><strong>Бајт</strong> (пример: <strong>ASCII</strong> или <strong>UTF</strong> енкодиран карактер).</li>
 </ul>
 
-<p><img src="/assets/images/granularnost.png" alt="granularnost" /></p>
+<figure>
+    <img src="/assets/images/granularnost.png" alt="granularnost" />
+    <figcaption><i>слика 1.0</i> грануларност на токени</figcaption>
+</figure>
 
 <hr />
 
@@ -111,8 +115,7 @@
   </li>
 </ul>
 
-<p><img src="/assets/images/tokenizator.png" alt="tokenizator" /><br />
-ние го користиме <strong>Unigram</strong>, со помош на <strong>SentencePiece</strong> библиотеката.</p>
+<p>ние го користиме <strong>Unigram</strong>, со помош на <strong>SentencePiece</strong> библиотеката.</p>
 <h2 id="4-dataset">4. Dataset</h2>
 <p>За оние кои не се запознаени Data set <strong>претставува колекција од податоци</strong>, најчесто организирани во табела.<br />
 Изглед на нашата “табела”:</p>
@@ -134,8 +137,8 @@
 Пред да се појави трансформер архитектурата, <strong>механизмите за “внимание”</strong> биле ограничени со <a href="">GRU</a> или <a href="">LSTM</a> и користењето на <a href="">RNN-Recurrent Neural Networks</a>.</p>
 <h2 id="6-позиционо-кодирање-positional-embeddings">6. Позиционо кодирање (Positional embeddings)</h2>
 <p>Оргиналната имплементација користи статични (фиксни) позициони вградувања. <br />
-За да се пресмета вредноста на едео позиционо вградување (3.5 во оригиналното истражувње).<br />
-Авторите ги користат функциите <strong>синус и косинус</strong> (наставниците и професорите беа во право, корисни се) :</p>
+За да се пресмета вредноста на едно позиционо вградување (3.5 во оригиналното истражувње).<br />
+Авторите ги користат функциите <strong>синус и косинус</strong>:</p>
 
 <p>\(PE(\text{pos}, 2i) = \sin\left(\frac{\text{pos}}{10000^{\frac{2i}{d_{\text{model}}}}}\right)\) <br />
 \(PE(\text{pos}, 2i+1) = \cos\left(\frac{\text{pos}}{10000^{\frac{2i}{d_{\text{model}}}}}\right)\)</p>
@@ -144,10 +147,14 @@
 <ul>
   <li>pos - позицијата на векторот</li>
   <li>i - индексот внатре во векторот</li>
-  <li>d_model - димензијата на внесот<br />
-Позиционалните вградувања се користат за информирање на трансфомерот на која позиција се наоѓаат векторите за внес. Тие се додаваат на секоја вредност во векторот посебно. <br />
-<img src="/assets/images/visualize.png" alt="granularnost" /></li>
+  <li>d_model - димензијата на внесот</li>
 </ul>
+
+<p>Позиционалните вградувања се користат за информирање на трансфомерот на која позиција се наоѓаат векторите за внес. Тие се додаваат на секоја вредност во векторот посебно.</p>
+<figure>
+    <img src="/assets/images/visualize.png" alt="vizuelizacija" />
+    <figcaption><i>слика 1.1</i> позициони кодирања на познати модели</figcaption>
+</figure>
 
 <figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="k">class</span> <span class="nc">PositionalEncoding</span><span class="p">(</span><span class="n">nn</span><span class="p">.</span><span class="n">Module</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">emb_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">dropout</span><span class="p">,</span> <span class="n">maxlen</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10000</span><span class="p">):</span>
@@ -213,20 +220,23 @@
 SentencePiece во себе комбинира 2 најчесто користени методи:</p>
 <ul>
   <li>Byte paie encoding - за компресија и предвидување на често користени парови од карактери</li>
-  <li>Unigram - кој користи статистички модели за избор на оптимален сет на поединци
-    <h3 id="81-unigram">8.1 Unigram</h3>
-    <p><strong>Unigram</strong> е алгоритам за токенизација на под-зборови, каде што претпоставката е дека појавата на токен е <strong>независна</strong> од било кој од другите токени кои се појавиле претходно. Принципот на алгоритмот е заснован на теоријата на веројатност за сегментација на текстот. Користи <strong>ЕМ</strong> алгоритам тренирање и <strong>Viterbi</strong> алгоритам за кодирање на токените. Токенизацијата започнува од голем корпус на токени-кандидати и алгоритмот прво учи кои од нив најдобро го зграпчуваат значењето на податоците кои се користат при тренинг на мрежата. Unigram, всушност итеративно ги наоѓа и ги отстранува непотребните и помалку користените токени, оставајќи оптималхо множество на токени.</p>
-  </li>
+  <li>Unigram - кој користи статистички модели за избор на оптимален сет на поединци</li>
 </ul>
+
+<h3 id="81-unigram">8.1 Unigram</h3>
+<p><strong>Unigram</strong> е алгоритам за токенизација на под-зборови, каде што претпоставката е дека појавата на токен е <strong>независна</strong> од било кој од другите токени кои се појавиле претходно. Принципот на алгоритмот е заснован на теоријата на веројатност за сегментација на текстот. Користи <strong>ЕМ</strong> алгоритам тренирање и <strong>Viterbi</strong> алгоритам за кодирање на токените. Токенизацијата започнува од голем корпус на токени-кандидати и алгоритмот прво учи кои од нив најдобро го зграпчуваат значењето на податоците кои се користат при тренинг на мрежата. Unigram, всушност итеративно ги наоѓа и ги отстранува непотребните и помалку користените токени, оставајќи оптималхо множество на токени.</p>
 
 <hr />
 
 <h2 id="тренирање">Тренирање</h2>
 <p>Под процесот тренирање се мисли учење на невронската мрежа (трансформерот) да преведува текст. <br />
 За овој чекор искористивме графичка картичка <strong>Nvidia RTX 4090</strong> со 24 GB VRAM. <br />
-Моделот го трениравме <strong>20</strong> епохи, секоја епоха траеше околу еден час, после 20 епохи учење, моделот започна да покажува знаци на конвергенција (асимптотски паралелно со x оската).<br />
-<img src="/assets/images/valtrainlossepoch.png" alt="tokenizator" /> <br />
-За Validation Loss беше користено 10% од податоците, со фиксиран seed за репордукција (42). Причината за толку мал примерок е тоа што dataset-от е веќе мал, а 30% се премногу податоци да бидат надвор за валидација а не тренирање. Можеби и затоа се толку лоши резултатите. <br />
+Моделот го трениравме <strong>20</strong> епохи, секоја епоха траеше околу еден час, после 20 епохи учење, моделот започна да покажува знаци на конвергенција (асимптотски паралелно со x оската).</p>
+<figure>
+    <img src="/assets/images/valtrainlossepoch.png" alt="loss/epoch" />
+    <figcaption><i>слика 1.2</i> грешка/епоха</figcaption>
+</figure>
+<p>За Validation Loss беше користено 10% од податоците, со фиксиран seed за репордукција (42). Причината за толку мал примерок е тоа што dataset-от е веќе мал, а 30% се премногу податоци да бидат надвор за валидација а не тренирање. Можеби и затоа се толку лоши резултатите. <br />
 Според табелата која е прикажана како <strong>најдобар кандидат за инференца</strong> се покажа епоха <strong>18</strong>, со најниска вредност на валидација, тажно е што вредностите се над 3. <br />
 Претпоставуваме дека направивме грешка со learning-rate или грешка што искуството може само да ни ја открие, доколку некој поискусен знае слободно нека не корегира.</p>
 
